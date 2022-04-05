@@ -4,30 +4,44 @@ import ReactDOM from 'react-dom';
 const element = <h1>Hello World</h1>
 
 class Square extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: 1
-        };
-    }
-
     render() {
         return (
             <button className="square"
-                onClick={() => this.setState({ value: 'X' })}>
-                {this.state.value}
+                onClick={() => this.props.onClick()}>
+                {this.props.value}
             </button>
         )
     }
 }
 
 class Board extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            squares: Array(9).fill(null),
+            xIsNext: true
+        }
+    }
+
+    handleClick(i) {
+        const squares = this.state.squares.slice();
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            squares: squares,
+            xIsNext: !this.state.xIsNext
+        });
+    }
+
     renderSquare(i) {
-        return <Square value={i} />
+        return (
+            <Square value={this.state.squares[i]}
+                onClick={() => this.handleClick(i)}
+            />
+        )
     }
 
     render() {
-        const status = "Next Play:x";
+        const status = "Next Play :" + (this.state.xIsNext ? 'X' : 'O');
         return (
             <div>
                 <div className="Status">{status}</div>
@@ -68,5 +82,17 @@ class Game extends React.Component {
 }
 
 
+function tick() {
+    const element = (
+        <div>
+            <h1>Hello World</h1>
+            <h2>It is {new Date().toLocaleTimeString()}.</h2>
+        </div>
+    );
 
-ReactDOM.render(<Game />, document.getElementById("root"));
+    ReactDOM.render(element, document.getElementById("root"));
+}
+
+setInterval(tick, 1000);
+
+//ReactDOM.render(<Game />, document.getElementById("root"));
